@@ -60,4 +60,12 @@ public class WidgetProvider extends AppWidgetProvider {
   private static RemoteViews getRemoteViews(@NonNull Context context) {
     return new RemoteViews(context.getPackageName(), R.layout.widget);
   }
+
+  @Override
+  public void onDeleted(@NonNull Context context, @NonNull int[] appWidgetIds) {
+    for (int widgetId : appWidgetIds) {
+      File imageFile = Pfw.getImageFile(context, widgetId);
+      imageFile.delete();
+    }
+  }
 }
