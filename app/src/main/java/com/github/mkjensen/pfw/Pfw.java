@@ -18,24 +18,29 @@ package com.github.mkjensen.pfw;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 
 import java.io.File;
 
 final class Pfw {
 
+  @NonNull
   public static final String ALL_IMAGES_MIME_TYPE = "image/*";
 
   private Pfw() {
   }
 
-  public static File getImageFile(Context context, int widgetId) {
+  @NonNull
+  public static File getImageFile(@NonNull Context context, int widgetId) {
     return new File(context.getFilesDir(), "image-" + widgetId);
   }
 
-  public static SharedPreferences getPreferences(Context context) {
+  @NonNull
+  public static SharedPreferences getPreferences(@NonNull Context context) {
     return context.getSharedPreferences(context.getPackageName() + ".images", Context.MODE_PRIVATE);
   }
 
+  @NonNull
   public static String getImagePathPreferenceKey(int widgetId) {
     return "image-" + widgetId;
   }

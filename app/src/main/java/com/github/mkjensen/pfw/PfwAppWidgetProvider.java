@@ -29,7 +29,8 @@ import android.widget.RemoteViews;
 public class PfwAppWidgetProvider extends AppWidgetProvider {
 
   @Override
-  public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+  public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
+                       @NonNull int[] appWidgetIds) {
     SharedPreferences preferences = Pfw.getPreferences(context);
     for (int i : appWidgetIds) {
       String imagePath = preferences.getString(Pfw.getImagePathPreferenceKey(i), null);

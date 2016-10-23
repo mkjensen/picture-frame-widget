@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -78,7 +79,7 @@ public class ConfigureActivity extends AppCompatActivity {
   }
 
   @Override
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     if (requestCode == OPEN_IMAGE_REQUEST_CODE) {
       imageOpened(resultCode, data);
     } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -86,8 +87,8 @@ public class ConfigureActivity extends AppCompatActivity {
     }
   }
 
-  private void imageOpened(int resultCode, Intent data) {
-    if (resultCode != RESULT_OK) {
+  private void imageOpened(int resultCode, @Nullable Intent data) {
+    if (resultCode != RESULT_OK || data == null) {
       // TODO: Report problem
       new AlertDialog.Builder(this).setMessage("An error occurred while opening the image").show();
       finish();
@@ -96,7 +97,7 @@ public class ConfigureActivity extends AppCompatActivity {
     cropImage(data.getData());
   }
 
-  private void cropImage(Uri imageUri) {
+  private void cropImage(@NonNull Uri imageUri) {
     // TODO: Set options such that cropping results in optimal image for widget
     CropImage.activity(imageUri)
         .setOutputUri(Uri.fromFile(imageFile))
