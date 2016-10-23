@@ -16,11 +16,15 @@
 
 package com.github.mkjensen.pfw;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.File;
+import java.util.Locale;
 
 final class Pfw {
 
@@ -43,5 +47,15 @@ final class Pfw {
   @NonNull
   public static String getImagePathPreferenceKey(int widgetId) {
     return "image-" + widgetId;
+  }
+
+  public static void e(@NonNull String tag, @NonNull String messageFormat,
+                       @NonNull Object... messageArgs) {
+    log(Log.ERROR, tag, String.format(Locale.US, messageFormat, messageArgs));
+  }
+
+  public static void log(int level, @NonNull String tag, @NonNull String messageFormat,
+                         @NonNull Object... messageArgs) {
+    FirebaseCrash.logcat(level, tag, String.format(Locale.US, messageFormat, messageArgs));
   }
 }

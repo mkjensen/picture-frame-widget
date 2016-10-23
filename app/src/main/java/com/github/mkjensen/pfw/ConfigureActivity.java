@@ -16,6 +16,8 @@
 
 package com.github.mkjensen.pfw;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,14 +25,16 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.File;
 
 public class ConfigureActivity extends AppCompatActivity {
+
+  private static final String TAG = "ConfigureActivity";
 
   private static final int OPEN_IMAGE_REQUEST_CODE = 42;
 
@@ -45,26 +49,27 @@ public class ConfigureActivity extends AppCompatActivity {
     // User may cancel (e.g. press back button) at any time. Default to canceled result.
     setResult(RESULT_CANCELED);
 
-    // Initialization.
-    initWidgetId();
+    if (!initWidgetId()) {
+      return;
+    }
     initImageFile();
-
-    // Request image from user.
     openImage();
   }
 
-  private void initWidgetId() {
+  private boolean initWidgetId() {
     int widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     Bundle extras = getIntent().getExtras();
     if (extras != null) {
       widgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
     }
     if (widgetId == AppWidgetManager.INVALID_APPWIDGET_ID) {
-      // Widget ID missing, abort.
-      // TODO: Report problem
+      Pfw.e(TAG, "Invalid widget ID specified: widgetId=%d", widgetId);
+      FirebaseCrash.report(new Exception());
       finish();
+      return false;
     }
     this.widgetId = widgetId;
+    return true;
   }
 
   private void initImageFile() {
@@ -89,8 +94,10 @@ public class ConfigureActivity extends AppCompatActivity {
 
   private void imageOpened(int resultCode, @Nullable Intent data) {
     if (resultCode != RESULT_OK || data == null) {
-      // TODO: Report problem
-      new AlertDialog.Builder(this).setMessage("An error occurred while opening the image").show();
+      CropImageView.CropResult result = CropImage.getActivityResult(data);
+      Pfw.e(TAG, "An error occurred while opening image: resultCode=%d", resultCode);
+      FirebaseCrash.report(result != null && result.getError() != null ?
+          result.getError() : new Exception());
       finish();
       return;
     }
@@ -106,8 +113,8 @@ public class ConfigureActivity extends AppCompatActivity {
 
   private void imageCropped(int resultCode) {
     if (resultCode != RESULT_OK) {
-      // TODO: Report problem
-      new AlertDialog.Builder(this).setMessage("An error occurred while cropping the image").show();
+      Pfw.e(TAG, "An error occurred while cropping image: resultCode=%d", resultCode);
+      FirebaseCrash.report(new Exception());
       finish();
       return;
     }

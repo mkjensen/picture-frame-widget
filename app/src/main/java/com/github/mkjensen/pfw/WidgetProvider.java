@@ -16,6 +16,8 @@
 
 package com.github.mkjensen.pfw;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -28,6 +30,8 @@ import android.widget.RemoteViews;
 
 public class WidgetProvider extends AppWidgetProvider {
 
+  private static final String TAG = "WidgetProvider";
+
   @Override
   public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
                        @NonNull int[] appWidgetIds) {
@@ -37,6 +41,8 @@ public class WidgetProvider extends AppWidgetProvider {
       if (imagePath != null) {
         setImage(context, appWidgetManager, i, imagePath);
       } else {
+        Pfw.e(TAG, "Asked to update widget but image path not found: widgetId=%d", i);
+        FirebaseCrash.report(new Exception());
         showError(context, appWidgetManager, i);
       }
     }
