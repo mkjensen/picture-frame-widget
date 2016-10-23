@@ -16,11 +16,15 @@
 
 package com.github.mkjensen.pfw;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
@@ -29,9 +33,31 @@ import java.io.File;
 
 public class WidgetProvider extends AppWidgetProvider {
 
+  private FirebaseAnalytics analytics;
+
+  @Override
+  public void onReceive(Context context, Intent intent) {
+    if (analytics == null) {
+      analytics = FirebaseAnalytics.getInstance(context);
+    }
+    super.onReceive(context, intent);
+  }
+
+  @Override
+  public void onEnabled(@NonNull Context context) {
+    PfwAnalytics.widgetProviderEnabled(analytics);
+  }
+
+  @Override
+  public void onRestored(@NonNull Context context, @NonNull int[] oldWidgetIds,
+                         @NonNull int[] newWidgetIds) {
+    PfwAnalytics.widgetProviderRestored(analytics);
+  }
+
   @Override
   public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
                        @NonNull int[] appWidgetIds) {
+    PfwAnalytics.widgetProviderUpdated(analytics);
     for (int widgetId : appWidgetIds) {
       File imageFile = Pfw.getImageFile(context, widgetId);
       if (imageFile.exists()) {
@@ -62,10 +88,23 @@ public class WidgetProvider extends AppWidgetProvider {
   }
 
   @Override
+  public void onAppWidgetOptionsChanged(@NonNull Context context,
+                                        @NonNull AppWidgetManager appWidgetManager, int appWidgetId,
+                                        @NonNull Bundle newOptions) {
+    PfwAnalytics.widgetProviderChanged(analytics);
+  }
+
+  @Override
   public void onDeleted(@NonNull Context context, @NonNull int[] appWidgetIds) {
+    PfwAnalytics.widgetProviderDeleted(analytics);
     for (int widgetId : appWidgetIds) {
       File imageFile = Pfw.getImageFile(context, widgetId);
       imageFile.delete();
     }
+  }
+
+  @Override
+  public void onDisabled(@NonNull Context context) {
+    PfwAnalytics.widgetProviderDisabled(analytics);
   }
 }

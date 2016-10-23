@@ -16,6 +16,7 @@
 
 package com.github.mkjensen.pfw;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 
 import android.appwidget.AppWidgetManager;
@@ -37,6 +38,8 @@ public class ConfigureActivity extends AppCompatActivity {
 
   private static final int OPEN_IMAGE_REQUEST_CODE = 42;
 
+  private FirebaseAnalytics analytics;
+
   private int widgetId;
 
   private File imageFile;
@@ -48,11 +51,17 @@ public class ConfigureActivity extends AppCompatActivity {
     // User may cancel (e.g. press back button) at any time. Default to canceled result.
     setResult(RESULT_CANCELED);
 
+    initAnalytics();
     if (!initWidgetId()) {
       return;
     }
     initImageFile();
     openImage();
+  }
+
+  private void initAnalytics() {
+    analytics = FirebaseAnalytics.getInstance(this);
+    PfwAnalytics.widgetConfigureBegin(analytics);
   }
 
   private boolean initWidgetId() {
@@ -76,6 +85,7 @@ public class ConfigureActivity extends AppCompatActivity {
   }
 
   private void openImage() {
+    PfwAnalytics.imageOpenBegin(analytics);
     Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
     intent.addCategory(Intent.CATEGORY_OPENABLE);
     intent.setType(Pfw.ALL_IMAGES_MIME_TYPE);
@@ -100,10 +110,12 @@ public class ConfigureActivity extends AppCompatActivity {
       finish();
       return;
     }
+    PfwAnalytics.imageOpenComplete(analytics);
     cropImage(data.getData());
   }
 
   private void cropImage(@NonNull Uri imageUri) {
+    PfwAnalytics.imageCropBegin(analytics);
     // TODO: Set options such that cropping results in optimal image for widget
     CropImage.activity(imageUri)
         .setOutputUri(Uri.fromFile(imageFile))
@@ -117,6 +129,7 @@ public class ConfigureActivity extends AppCompatActivity {
       finish();
       return;
     }
+    PfwAnalytics.imageCropComplete(analytics);
     finishSuccessfully();
   }
 
@@ -125,6 +138,7 @@ public class ConfigureActivity extends AppCompatActivity {
     Intent intent = new Intent();
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
     setResult(RESULT_OK, intent);
+    PfwAnalytics.widgetConfigureComplete(analytics);
     finish();
   }
 }
