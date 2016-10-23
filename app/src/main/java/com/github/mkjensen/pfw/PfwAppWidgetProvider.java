@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 
 public class PfwAppWidgetProvider extends AppWidgetProvider {
@@ -40,8 +41,11 @@ public class PfwAppWidgetProvider extends AppWidgetProvider {
     }
   }
 
-  static void setImage(@NonNull Context context, @NonNull AppWidgetManager manager, int widgetId,
+  static void setImage(@NonNull Context context, @Nullable AppWidgetManager manager, int widgetId,
                        @NonNull String imagePath) {
+    if (manager == null) {
+      manager = AppWidgetManager.getInstance(context);
+    }
     Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
     setBitmap(context, manager, widgetId, bitmap);
   }
