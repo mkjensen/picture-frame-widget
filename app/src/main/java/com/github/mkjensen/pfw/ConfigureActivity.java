@@ -20,7 +20,6 @@ import com.google.firebase.crash.FirebaseCrash;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -118,22 +117,11 @@ public class ConfigureActivity extends AppCompatActivity {
       finish();
       return;
     }
-    saveAndUpdateWidget();
+    finishSuccessfully();
   }
 
-  private void saveAndUpdateWidget() {
-    saveWidget();
+  private void finishSuccessfully() {
     WidgetProvider.setImage(this, null, widgetId, imageFile.getAbsolutePath());
-    finishSuccessful();
-  }
-
-  private void saveWidget() {
-    SharedPreferences.Editor editor = Pfw.getPreferences(this).edit();
-    editor.putString(Pfw.getImagePathPreferenceKey(widgetId), imageFile.getAbsolutePath());
-    editor.apply();
-  }
-
-  private void finishSuccessful() {
     Intent intent = new Intent();
     intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
     setResult(RESULT_OK, intent);

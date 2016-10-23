@@ -19,23 +19,23 @@ package com.github.mkjensen.pfw;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 
+import java.io.File;
+
 public class WidgetProvider extends AppWidgetProvider {
 
   @Override
   public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,
                        @NonNull int[] appWidgetIds) {
-    SharedPreferences preferences = Pfw.getPreferences(context);
-    for (int i : appWidgetIds) {
-      String imagePath = preferences.getString(Pfw.getImagePathPreferenceKey(i), null);
-      if (imagePath != null) {
-        setImage(context, appWidgetManager, i, imagePath);
+    for (int widgetId : appWidgetIds) {
+      File imageFile = Pfw.getImageFile(context, widgetId);
+      if (imageFile.exists()) {
+        setImage(context, appWidgetManager, widgetId, imageFile.getAbsolutePath());
       }
     }
   }

@@ -19,7 +19,6 @@ package com.github.mkjensen.pfw;
 import com.google.firebase.crash.FirebaseCrash;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -37,16 +36,6 @@ final class Pfw {
   @NonNull
   public static File getImageFile(@NonNull Context context, int widgetId) {
     return new File(context.getFilesDir(), "image-" + widgetId);
-  }
-
-  @NonNull
-  public static SharedPreferences getPreferences(@NonNull Context context) {
-    return context.getSharedPreferences(context.getPackageName() + ".images", Context.MODE_PRIVATE);
-  }
-
-  @NonNull
-  public static String getImagePathPreferenceKey(int widgetId) {
-    return "image-" + widgetId;
   }
 
   public static void e(@NonNull String tag, @NonNull String messageFormat,
