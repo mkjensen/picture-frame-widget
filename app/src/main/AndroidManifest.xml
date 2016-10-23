@@ -27,7 +27,7 @@
         android:theme="@style/Theme.AppCompat"
         tools:ignore="GoogleAppIndexingWarning">
 
-        <receiver android:name=".PfwAppWidgetProvider">
+        <receiver android:name=".WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

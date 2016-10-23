@@ -26,7 +26,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.widget.RemoteViews;
 
-public class PfwAppWidgetProvider extends AppWidgetProvider {
+public class WidgetProvider extends AppWidgetProvider {
 
   @Override
   public void onUpdate(@NonNull Context context, @NonNull AppWidgetManager appWidgetManager,

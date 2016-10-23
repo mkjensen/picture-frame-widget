@@ -116,7 +116,7 @@ public class ConfigureActivity extends AppCompatActivity {
 
   private void saveAndUpdateWidget() {
     saveWidget();
-    PfwAppWidgetProvider.setImage(this, null, widgetId, imageFile.getAbsolutePath());
+    WidgetProvider.setImage(this, null, widgetId, imageFile.getAbsolutePath());
     finishSuccessful();
   }
 
